@@ -1,5 +1,10 @@
 # R ggplot examples
 
+# using the iris (base) ; economics (ggplot) ; msleep (ggplot) data sets
+# iris = scatterplot and facets
+# economics = line plots, time series and facets
+# msleep = scatter, stat(smooth)
+
 # using the iris data set
 
 # basic x, y scatterplot
@@ -55,4 +60,14 @@ fig4 <- ggplot(df4, aes(x = date, y = value))
 fig4 + facet_grid(df4$variable ~ ., scales = "free") + geom_line()
 fig4 + facet_grid(df4$variable ~ ., scales = "free") + geom_line(aes(color = df4$variable))
 
+# using the msleep data
+
+ggplot(msleep, aes(x = sleep_total, y = sleep_rem, color = vore)) +
+  geom_point()
+ggplot(msleep, aes(x = sleep_total, y = sleep_rem, color = vore)) +
+  geom_point() +
+  stat_smooth()
+ggplot(msleep, aes(x = sleep_total, y = sleep_rem, color = vore)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = F)
 
