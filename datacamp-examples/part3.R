@@ -2,7 +2,46 @@
 
 # chapter 1
 
-# density plots
+### scatter plots
+
+library(ggplot2movies)
+set.seed(123)
+movies_small <- movies[sample(nrow(movies), 1000), ]
+movies_small$rating <- factor(round(movies_small$rating))
+
+# Explore movies_small with str()
+str(movies_small)
+
+# Build a scatter plot with mean and 95% CI
+ggplot(movies_small, aes(x = rating, y = votes)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_cl_normal",
+               geom = "crossbar",
+               width = 0.2,
+               col = "red") +
+  scale_y_log10()
+
+
+### box plots
+# Add a boxplot geom
+d <- ggplot(movies_small, aes(x = rating, y = votes)) +
+  geom_point() +
+  geom_boxplot() +
+  stat_summary(fun.data = "mean_cl_normal",
+               geom = "crossbar",
+               width = 0.2,
+               col = "red")
+
+# Untransformed plot
+d
+
+# Transform the scale
+d + scale_y_log10()
+
+# Transform the coordinates
+d + coord_trans(y = "log10")
+
+### density plots
 
 test_data <- rnorm(200, 3, 0.25)
 
@@ -67,3 +106,69 @@ ggplot(faithful, aes(x = waiting, y = eruptions)) +
     x = "Wating time between eruptions (minutes)",
     y = "Number of eruptions (count)"
   )
+
+
+## for ternary plots and stacked bar charts using soil data from Africa
+
+## the africa dataset is located in the GSIF package https://cran.r-project.org/package=GSIF
+
+## stacked bar charts
+
+str(africa)
+
+# Sample the dataset
+africa_sample <- africa[sample(1:nrow(africa), size = 50), ]
+
+# Add an ID column from the row.names
+africa_sample$ID <- row.names(africa_sample)
+
+# Gather africa_sample
+library(tidyr)
+africa_sample_tidy <- gather(africa_sample, key, value, -ID)
+head(africa_sample_tidy)
+
+# Finish the ggplot command
+ggplot(africa_sample_tidy, aes(x = factor(ID), y = value, fill = key)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Location", y = "Composition", fill = "Component") +
+  theme_minimal()
+
+# Plot 1
+ggtern(africa, aes(x = Sand, y = Silt, z = Clay)) +
+  geom_density_tern()
+
+# Plot 2
+ggtern(africa, aes(x = Sand, y = Silt, z = Clay)) +
+  stat_density_tern(geom = "polygon", aes(fill = ..level.., alpha = ..level..)) +
+  guides(fill = guide_legend(show = F))
+
+## for analyzing diagnostic plots
+
+# for autoplotting lm diagnostic graphs
+# Create linear model: res
+res <- lm(Volume ~ Girth, data = trees)
+
+# Plot res
+plot(res)
+
+# Import ggfortify and use autoplot()
+library(ggfortify)
+
+autoplot(res, ncol = 2)
+
+# kmeans clustering
+
+# Perform clustering
+iris_k <- kmeans(iris[-5], 3)
+
+# Autoplot: color according to cluster
+autoplot(iris_k, data = iris, frame = TRUE)
+
+# Autoplot: color according to species
+autoplot(iris_k, data = iris, frame = TRUE, col = "Species")
+
+### case studies
+
