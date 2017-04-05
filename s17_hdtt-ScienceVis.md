@@ -55,6 +55,55 @@ p + geom_point()
 
 ![plot of chunk unnamed-chunk-3](s17_hdtt-ScienceVis-figure/unnamed-chunk-3-1.png)
 
+statistics
+=========================
+
+using the stat layer to add a smoothing curve
+
+
+```r
+p + geom_point() + stat_smooth()
+```
+
+![plot of chunk unnamed-chunk-4](s17_hdtt-ScienceVis-figure/unnamed-chunk-4-1.png)
+
+facets
+=========================
+
+facets allow you to facet the data across multiple plots
+
+
+```r
+p + geom_point() + facet_grid(. ~ Species) + stat_smooth()
+```
+
+![plot of chunk unnamed-chunk-5](s17_hdtt-ScienceVis-figure/unnamed-chunk-5-1.png)
+
+coordinates
+=========================
+
+coordinates let you zoom into parts of a visualization, fix aspect ratios, and use polar coordinates (for pie charts)
+
+
+```r
+p + geom_point() + stat_smooth() + coord_cartesian(xlim = c(4.5, 5.5))
+```
+
+![plot of chunk unnamed-chunk-6](s17_hdtt-ScienceVis-figure/unnamed-chunk-6-1.png)
+
+themes
+=========================
+
+adding decorations and formatting with themes
+
+
+```r
+p + geom_point() + facet_grid(. ~ Species) + stat_smooth() + theme_bw()
+```
+
+![plot of chunk unnamed-chunk-7](s17_hdtt-ScienceVis-figure/unnamed-chunk-7-1.png)
+
+
 available mappings
 ========================
 
@@ -80,13 +129,3 @@ available mappings
 - text on plot or axes
 - shape
 
-
-
-statistics
-=========================
-
-coordinates and facets
-=========================
-
-themes
-=========================
