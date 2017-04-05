@@ -1,5 +1,6 @@
 # DataCamp ggplot class 3
 
+###############################################
 # chapter 1
 
 ### scatter plots
@@ -108,8 +109,34 @@ ggplot(faithful, aes(x = waiting, y = eruptions)) +
   )
 
 
-## for ternary plots and stacked bar charts using soil data from Africa
+####################################
+# chapter 2
+# plots for specific data types
+# - pair plots and correlations
+# - ternary
+# - diagnostic
+# - autoplot
+####################################
 
+## pair and correlation plots
+library(GGally)
+
+# using the iris data set
+
+# pairs from base graphics
+pairs(iris[1:4])
+
+# chart.Correlation from PerformanceAnalytics
+library(PerformanceAnalytics)
+chart.Correlation(iris[1:4])
+
+# ggpairs
+ggpairs(iris[1:4])  # default, b&w
+iris.p <- ggpairs(iris, mapping = aes(color = Species), columns = 1:4) # using color aesthetic for species
+iris.p
+
+####################################
+## for ternary plots and stacked bar charts using soil data from Africa
 ## the africa dataset is located in the GSIF package https://cran.r-project.org/package=GSIF
 
 ## stacked bar charts
@@ -145,18 +172,25 @@ ggtern(africa, aes(x = Sand, y = Silt, z = Clay)) +
   stat_density_tern(geom = "polygon", aes(fill = ..level.., alpha = ..level..)) +
   guides(fill = guide_legend(show = F))
 
+####################################
 ## for analyzing diagnostic plots
+
+# linear modeling diagnostics
+# - residuals v. fitted
+# - normal Q-Q
+# - scale-location
+# - residuals v. leverage
+# online vignette https://cran.r-project.org/web/packages/ggfortify/vignettes/plot_lm.html
 
 # for autoplotting lm diagnostic graphs
 # Create linear model: res
 res <- lm(Volume ~ Girth, data = trees)
 
 # Plot res
-plot(res)
+plot(res) # this plots out 4 diagnostic graphs
 
 # Import ggfortify and use autoplot()
 library(ggfortify)
-
 autoplot(res, ncol = 2)
 
 # kmeans clustering
