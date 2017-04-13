@@ -7,6 +7,9 @@
 library(dplyr)
 library(stringr)
 library(ggplot2)
+library(gapminder)
+library(igraph)
+library(geomnet)
 
 #####################################
 # social science examples
@@ -88,3 +91,52 @@ ggplot(data = revere.p.2,
            #aes(label = ifelse(..weight.. > 3, ..from_id.., NA)),
            linewidth = 0.01) +
   theme_net()
+
+
+# 3 - timelines, using economic data
+
+# Some examples using the economics data sets from the ggplot package
+# note that there are two datasets : economics and economics_long
+# variables
+# pce = personal consumption expenditures
+# pop = total population, in thousands
+# psavert = personal savings rate
+# uempmed = median duration of unemployment, in weeks
+# unemploy = number of unemployed, in thousands
+
+# Review the structure of the two datasets
+str(economics)
+str(economics_long)
+
+# first line plot showing all variables involved in the long data set
+fig2 <- ggplot(economics_long, aes(x = date, y = value, color = variable))
+fig2 + geom_line()
+
+# line plot showing median duration of unemployment
+fig3 <- ggplot(economics, aes(date, uempmed))
+fig3 + geom_line()
+
+# same plot but adding points to the geoms so each month is given a point on the line
+fig3 + geom_line() + geom_point()
+
+# adding a horizontal line that shows the median of uempmed
+fig3 + geom_line() + geom_point() + geom_hline(yintercept = median(economics$uempmed))
+
+# trying to configure various facet options
+
+# this first attempt facets on the different variables in the dataset but creates a 2x3 set of graphs
+fig2 + facet_wrap(~ economics_long$variable) + geom_line()
+
+# this attempt stacks graphs but does not change scales, so all graphs have the same vertical scales, making some lines appear to be zero
+fig2 + facet_grid(economics_long$variable ~ .) + geom_line()
+
+# this attempt successfully stacks the line graphs
+fig2 + facet_grid(economics_long$variable ~ ., scales = "free") + geom_line()
+
+# subsetting the economics data and plotting two graphs vertically
+df4 <- subset(economics_long, variable == "uempmed" | variable == "unemploy")
+fig4 <- ggplot(df4, aes(x = date, y = value))
+
+# in b/w and then in 2 colors
+fig4 + facet_grid(df4$variable ~ ., scales = "free") + geom_line()
+fig4 + facet_grid(df4$variable ~ ., scales = "free") + geom_line(aes(color = df4$variable))

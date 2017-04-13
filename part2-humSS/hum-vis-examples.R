@@ -9,6 +9,11 @@ library(tidytext)
 library(dplyr)
 library(stringr)
 library(ggplot2)
+library(scales)
+library(reshape2)
+library(wordcloud)
+library(tidyr)
+library(gutenbergr)
 
 #####################################
 # humanities examples
@@ -44,7 +49,6 @@ tidy_books %>%
   xlab(NULL) +
   coord_flip()
 
-library(gutenbergr)
 
 # need to set a mirror for project gutenberg in order to get this to work
 # see github issue https://github.com/ropenscilabs/gutenbergr/issues/8
@@ -67,8 +71,6 @@ tidy_bronte %>%
 
 # gathering data together to compare across authors
 
-library(tidyr)
-
 frequency <- bind_rows(mutate(tidy_bronte, author = "Brontë Sisters"),
                        mutate(tidy_hgwells, author = "H.G. Wells"), 
                        mutate(tidy_books, author = "Jane Austen")) %>% 
@@ -82,7 +84,6 @@ frequency <- bind_rows(mutate(tidy_bronte, author = "Brontë Sisters"),
 
 # finally a plot
 
-library(scales)
 
 # expect a warning about rows with missing values being removed
 ggplot(frequency, aes(x = proportion, y = `Jane Austen`, color = abs(`Jane Austen` - proportion))) +
@@ -118,14 +119,10 @@ ggplot(janeaustensentiment, aes(index, sentiment, fill = book)) +
 
 # 3 - austen wordcloud
 
-library(wordcloud)
-
 tidy_books %>%
   anti_join(stop_words) %>%
   count(word) %>%
   with(wordcloud(word, n, max.words = 100))
-
-library(reshape2)
 
 tidy_books %>%
   inner_join(get_sentiments("bing")) %>%
